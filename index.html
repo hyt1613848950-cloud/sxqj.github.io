@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三湘奇匠——当非遗遇见数字潮玩</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SimSun", "宋体", "NSimSun", "新宋体", "STSong", "华文宋体", serif;
+        }
+        
+        body {
+            background-color: rgb(155, 49, 40);
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* 首页样式 */
+        .page {
+            min-height: 100vh;
+            padding: 20px 15px;
+            transition: transform 0.4s ease;
+        }
+        
+        .home-page {
+            background: rgb(155, 49, 40);
+            color: white;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .grid-item {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        /* 为每个卡片设置不同的背景颜色 - 新配色 */
+        .grid-item:nth-child(1) { background-color: rgb(187, 161, 203); } /* 湘绣 */
+        .grid-item:nth-child(2) { background-color: rgb(245, 171, 192); } /* 花鼓戏 */
+        .grid-item:nth-child(3) { background-color: rgb(39, 125, 147); } /* 苗族银饰 */
+        .grid-item:nth-child(4) { background-color: rgb(168, 195, 209); } /* 蓝印花布 */
+        .grid-item:nth-child(5) { background-color: rgb(118, 174, 166); } /* 益阳竹编 */
+        .grid-item:nth-child(6) { background-color: rgb(195, 171, 140); } /* 滩头年画 */
+        
+        .grid-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        .grid-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .grid-item .title {
+            padding: 12px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 详情页通用样式 */
+        .detail-page {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            padding: 20px 15px;
+            z-index: 10;
+            overflow-y: auto;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(-3px);
+        }
+        
+        .back-btn i {
+            margin-right: 5px;
+        }
+        
+        .detail-header {
+            text-align: center;
+            margin-bottom: 25px;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .detail-header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .detail-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .content-section {
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 8px;
+        }
+        
+        /* 为每个非遗项目的图标设置对应颜色 - 新配色 */
+        #xiangxiu-page .section-title i { color: rgb(187, 161, 203); }
+        #huaguxi-page .section-title i { color: rgb(245, 171, 192); }
+        #miaozu-page .section-title i { color: rgb(39, 125, 147); }
+        #lanyinhuabu-page .section-title i { color: rgb(168, 195, 209); }
+        #yiyang-page .section-title i { color: rgb(118, 174, 166); }
+        #tantou-page .section-title i { color: rgb(195, 171, 140); }
+        
+        /* 视频容器基础样式 */
+        .video-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 制作工艺视频 - 横屏16:9 */
+        .video-container.process-video {
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9比例 */
+        }
+        
+        /* IP形象视频 - 竖屏9:16 */
+        .video-container.ip-video {
+            height: 0;
+            padding-bottom: 177.78%; /* 9:16比例 */
+            max-height: 600px; /* 限制最大高度 */
+        }
+        
+        /* 视频播放器样式 */
+        .video-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            object-fit: contain; /* 保持原始比例 */
+            background-color: #f0f0f0; /* 视频加载时的背景色 */
+        }
+        
+        /* 视频占位符样式 */
+        .video-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        .video-placeholder .play-btn {
+            font-size: 40px;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+        
+        .intro-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #444;
+        }
+        
+        .intro-text p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+        
+        .process-steps {
+            list-style-type: none;
+        }
+        
+        .process-steps li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .process-steps li:before {
+            content: "•";
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        /* 为每个非遗项目设置对应的背景颜色和列表颜色 - 新配色 */
+        #xiangxiu-page { 
+            background: rgb(187, 161, 203); 
+        }
+        #xiangxiu-page .process-steps li:before {
+            color: rgb(187, 161, 203);
+        }
+        
+        #huaguxi-page { 
+            background: rgb(245, 171, 192); 
+        }
+        #huaguxi-page .process-steps li:before {
+            color: rgb(245, 171, 192);
+        }
+        
+        #miaozu-page { 
+            background: rgb(39, 125, 147); 
+        }
+        #miaozu-page .process-steps li:before {
+            color: rgb(39, 125, 147);
+        }
+        
+        #lanyinhuabu-page { 
+            background: rgb(168, 195, 209); 
+        }
+        #lanyinhuabu-page .process-steps li:before {
+            color: rgb(168, 195, 209);
+        }
+        
+        #yiyang-page { 
+            background: rgb(118, 174, 166); 
+        }
+        #yiyang-page .process-steps li:before {
+            color: rgb(118, 174, 166);
+        }
+        
+        #tantou-page { 
+            background: rgb(195, 171, 140); 
+        }
+        #tantou-page .process-steps li:before {
+            color: rgb(195, 171, 140);
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 360px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 首页 -->
+    <div class="page home-page" id="home-page">
+        <div class="header">
+            <h1>三湘奇匠</h1>
+            <p>当非遗遇见数字潮玩</p>
+        </div>
+        
+        <div class="grid-container">
+            <div class="grid-item" data-target="xiangxiu-page">
+                <img src="images/xiangxiu.jpg" alt="湘绣">
+                <div class="title">湘绣</div>
+            </div>
+            <div class="grid-item" data-target="huaguxi-page">
+                <img src="images/huaguxi.jpg" alt="花鼓戏">
+                <div class="title">花鼓戏</div>
+            </div>
+            <div class="grid-item" data-target="miaozu-page">
+                <img src="images/miaozu.jpg" alt="苗族银饰锻制技艺">
+                <div class="title">苗族银饰锻制技艺</div>
+            </div>
+            <div class="grid-item" data-target="lanyinhuabu-page">
+                <img src="images/lanyinhuabu.jpg" alt="蓝印花布印染技艺">
+                <div class="title">蓝印花布印染技艺</div>
+            </div>
+            <div class="grid-item" data-target="yiyang-page">
+                <img src="images/yiyang.jpg" alt="益阳竹编">
+                <div class="title">益阳竹编</div>
+            </div>
+            <div class="grid-item" data-target="tantou-page">
+                <img src="images/tantou.jpg" alt="滩头木版年画">
+                <div class="title">滩头木版年画</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 湘绣详情页 -->
+    <div class="detail-page" id="xiangxiu-page">
+        <a href="#" class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> 返回首页</a>
+        
+        <div class="detail-header">
+            <h1>湘绣</h1>
+            <p>湖南长沙 · 中国四大名绣之一</p>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-video"></i> 制作工艺视频</h2>
+            <div class="video-container process-video">
+                <video controls class="video-player">
+                    <source src="videos/xiangxiu/process.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-sync-alt"></i> IP形象展示</h2>
+            <div class="video-container ip-video">
+                <video controls class="video-player">
+                    <source src="videos/xiangxiu/ip-showcase.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-info-circle"></i> 湘绣介绍</h2>
+            <div class="intro-text">
+                <p>湘绣是以湖南长沙为中心的带有鲜明湘楚文化特色的湖南刺绣产品的总称，是中国四大名绣之一。湘绣起源于湖南的民间刺绣，吸取了苏绣和粤绣的优点而发展起来，已有2000多年历史。</p>
+                <p>湘绣主要以纯丝、硬缎、软缎、透明纱和各种颜色的丝线、绒线绣制而成。其特点是：构图严谨，色彩鲜明，各种针法富于表现力，通过丰富的色线和千变万化的针法，使绣出的人物、动物、山水、花鸟等具有特殊的艺术效果。</p>
+                <p>湘绣的传统产地主要集中在长沙、湘潭、衡阳等地，其中以长沙地区的湘绣最为著名。湘绣的代表作品有《狮》、《虎》、《松鼠》等，尤其是湘绣的"鬅毛针"法绣制的虎，生动逼真，栩栩如生。</p>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-cogs"></i> 制作流程</h2>
+            <div class="intro-text">
+                <ul class="process-steps">
+                    <li><strong>设计图稿：</strong>首先由设计师绘制绣品图稿，确定主题和构图。</li>
+                    <li><strong>选料：</strong>根据图稿选择合适的面料，如缎、纱、绢等。</li>
+                    <li><strong>上绷：</strong>将面料固定在绣绷上，保持面料平整。</li>
+                    <li><strong>勾稿：</strong>将设计图稿用细笔勾勒在面料上。</li>
+                    <li><strong>配线：</strong>根据图稿色彩搭配丝线颜色。</li>
+                    <li><strong>刺绣：</strong>运用各种针法进行刺绣，这是最核心的步骤。</li>
+                    <li><strong>拆绷：</strong>刺绣完成后将绣品从绣绷上取下。</li>
+                    <li><strong>整烫装裱：</strong>对绣品进行整烫，然后装裱成最终作品。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 花鼓戏详情页 -->
+    <div class="detail-page" id="huaguxi-page">
+        <a href="#" class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> 返回首页</a>
+        
+        <div class="detail-header">
+            <h1>花鼓戏</h1>
+            <p>湖南各地 · 最具代表性的地方戏曲</p>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-video"></i> 表演视频</h2>
+            <div class="video-container process-video">
+                <video controls class="video-player">
+                    <source src="videos/huaguxi/process.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-sync-alt"></i> IP形象展示</h2>
+            <div class="video-container ip-video">
+                <video controls class="video-player">
+                    <source src="videos/huaguxi/ip-showcase.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-info-circle"></i> 花鼓戏介绍</h2>
+            <div class="intro-text">
+                <p>花鼓戏是湖南最富代表性的地方戏曲剧种，起源于湘中、湘东和洞庭湖地区，已有200多年的历史。它是在湖南民间歌舞“地花鼓”、“花灯”、“采茶灯”的基础上，吸收民歌、戏曲音乐发展而成。</p>
+                <p>花鼓戏的唱腔丰富，表演形式活泼，语言生动，具有浓郁的生活气息和地方特色。其音乐主要来源于山歌、民歌、民间小调和劳动号子，唱腔分为川调、打锣腔、洞腔和小调四类。</p>
+                <p>湖南花鼓戏分布广泛，形成了长沙花鼓戏、岳阳花鼓戏、衡阳花鼓戏、邵阳花鼓戏、常德花鼓戏、零陵花鼓戏等六个主要流派。其中以长沙花鼓戏影响最大，流行于长沙、湘潭、株洲、益阳、岳阳等地。</p>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-cogs"></i> 艺术特色</h2>
+            <div class="intro-text">
+                <ul class="process-steps">
+                    <li><strong>音乐特色：</strong>以湖南方言演唱，曲调优美，节奏明快，富有生活气息。</li>
+                    <li><strong>表演特色：</strong>表演朴实、细腻，贴近生活，善于表现普通人的喜怒哀乐。</li>
+                    <li><strong>剧目特色：</strong>多取材于民间生活，反映劳动人民的生活和情感。</li>
+                    <li><strong>行当特色：</strong>早期只有小丑、小旦、小生三行，后发展为生、旦、净、丑四行。</li>
+                    <li><strong>服饰特色：</strong>服饰朴素大方，贴近民间生活，富有地方特色。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 苗族银饰锻制技艺详情页 -->
+    <div class="detail-page" id="miaozu-page">
+        <a href="#" class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> 返回首页</a>
+        
+        <div class="detail-header">
+            <h1>苗族银饰锻制技艺</h1>
+            <p>湖南湘西 · 苗族文化的瑰宝</p>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-video"></i> 制作工艺视频</h2>
+            <div class="video-container process-video">
+                <video controls class="video-player">
+                    <source src="videos/miaozu/process.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-sync-alt"></i> IP形象展示</h2>
+            <div class="video-container ip-video">
+                <video controls class="video-player">
+                    <source src="videos/miaozu/ip-showcase.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-info-circle"></i> 苗族银饰介绍</h2>
+            <div class="intro-text">
+                <p>苗族银饰锻制技艺是湖南省湘西土家族苗族自治州的一项传统手工技艺，已有400多年历史。苗族银饰以其精美的工艺、丰富的文化内涵和独特的民族风格闻名于世。</p>
+                <p>苗族银饰种类繁多，包括头饰、颈饰、胸饰、手饰、衣饰等五大类。其中最具代表性的有银冠、银角、银项圈、银压领、银胸牌、银手镯、银戒指、银耳环等。</p>
+                <p>湘西凤凰县是苗族银饰锻制技艺的重要传承地，这里的银饰工艺精湛，图案多以苗族神话传说、图腾崇拜和自然景物为题材，体现了苗族人民对美好生活的向往和追求。</p>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-cogs"></i> 制作流程</h2>
+            <div class="intro-text">
+                <ul class="process-steps">
+                    <li><strong>熔银：</strong>将银料放入坩埚中熔化成银水。</li>
+                    <li><strong>锻打：</strong>将银块锻打成所需厚度的银片。</li>
+                    <li><strong>下料：</strong>根据设计图纸裁剪银片。</li>
+                    <li><strong>拉丝：</strong>将银条拉成粗细不同的银丝。</li>
+                    <li><strong>掐花：</strong>用镊子将银丝掐成各种花纹。</li>
+                    <li><strong>镶嵌：</strong>在银饰上镶嵌宝石或其他装饰物。</li>
+                    <li><strong>清洗：</strong>用特制溶液清洗银饰表面。</li>
+                    <li><strong>抛光：</strong>对银饰进行抛光处理，使其光亮如镜。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 蓝印花布印染技艺详情页 -->
+    <div class="detail-page" id="lanyinhuabu-page">
+        <a href="#" class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> 返回首页</a>
+        
+        <div class="detail-header">
+            <h1>蓝印花布印染技艺</h1>
+            <p>湖南邵阳 · 传统印染工艺的活化石</p>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-video"></i> 制作工艺视频</h2>
+            <div class="video-container process-video">
+                <video controls class="video-player">
+                    <source src="videos/lanyinhuabu/process.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-sync-alt"></i> IP形象展示</h2>
+            <div class="video-container ip-video">
+                <video controls class="video-player">
+                    <source src="videos/lanyinhuabu/ip-showcase.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-info-circle"></i> 蓝印花布介绍</h2>
+            <div class="intro-text">
+                <p>蓝印花布是中国传统的手工印染工艺品，距今已有1300多年的历史。湖南邵阳地区的蓝印花布以其独特的工艺和鲜明的地方特色而闻名。</p>
+                <p>蓝印花布以纯棉白布为原料，采用天然靛蓝染料，通过手工刻版、刮浆、染色、刮白等多道工序制作而成。其图案多以花草、鸟兽、虫鱼、人物等为题材，寓意吉祥美好。</p>
+                <p>邵阳蓝印花布的特点是蓝白分明，图案古朴典雅，具有浓厚的乡土气息。它不仅是一种实用的纺织品，更是一种具有很高艺术价值的民间工艺品。</p>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-cogs"></i> 制作流程</h2>
+            <div class="intro-text">
+                <ul class="process-steps">
+                    <li><strong>设计图稿：</strong>根据传统图案设计印花图稿。</li>
+                    <li><strong>刻制花版：</strong>在桐油纸上刻制印花版。</li>
+                    <li><strong>调浆：</strong>用黄豆粉和石灰调制成防染浆。</li>
+                    <li><strong>刮浆：</strong>将防染浆通过花版刮印在布面上。</li>
+                    <li><strong>染色：</strong>将布浸入靛蓝染缸中反复染色。</li>
+                    <li><strong>刮白：</strong>刮掉防染浆，露出白色花纹。</li>
+                    <li><strong>清洗：</strong>清洗布面上的残留物。</li>
+                    <li><strong>晾晒：</strong>在阳光下自然晾晒完成。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 益阳竹编详情页 -->
+    <div class="detail-page" id="yiyang-page">
+        <a href="#" class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> 返回首页</a>
+        
+        <div class="detail-header">
+            <h1>益阳竹编</h1>
+            <p>湖南益阳 · 竹艺之乡的匠心传承</p>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-video"></i> 制作工艺视频</h2>
+            <div class="video-container process-video">
+                <video controls class="video-player">
+                    <source src="videos/yiyang/process.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-sync-alt"></i> IP形象展示</h2>
+            <div class="video-container ip-video">
+                <video controls class="video-player">
+                    <source src="videos/yiyang/ip-showcase.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-info-circle"></i> 益阳竹编介绍</h2>
+            <div class="intro-text">
+                <p>益阳竹编是湖南省益阳市的传统手工艺品，起源于明清时期，已有600多年的历史。益阳素有“竹艺之乡”的美誉，其竹编工艺精湛，品种繁多。</p>
+                <p>益阳竹编选用优质楠竹、毛竹为原料，经过破篾、刮篾、染色、编织等多道工序制作而成。产品包括日用竹编、艺术竹编、建筑竹编三大类，既有实用价值，又有艺术价值。</p>
+                <p>益阳小郁竹艺是益阳竹编的代表，以其独特的郁制工艺闻名。郁制是通过火烤加热使竹材软化，然后弯曲成各种形状的工艺，能够制作出造型复杂的竹制品。</p>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-cogs"></i> 制作流程</h2>
+            <div class="intro-text">
+                <ul class="process-steps">
+                    <li><strong>选竹：</strong>选择生长3-5年的优质竹子。</li>
+                    <li><strong>破篾：</strong>将竹子破成粗细均匀的竹篾。</li>
+                    <li><strong>刮篾：</strong>刮去竹篾表面的青皮和毛刺。</li>
+                    <li><strong>染色：</strong>根据需要将竹篾染成不同颜色。</li>
+                    <li><strong>郁制：</strong>通过火烤使竹材软化弯曲成型。</li>
+                    <li><strong>编织：</strong>采用不同的编织技法进行编织。</li>
+                    <li><strong>整形：</strong>对编织品进行整形处理。</li>
+                    <li><strong>上漆：</strong>涂抹清漆保护竹编表面。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 滩头木版年画详情页 -->
+    <div class="detail-page" id="tantou-page">
+        <a href="#" class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> 返回首页</a>
+        
+        <div class="detail-header">
+            <h1>滩头木版年画</h1>
+            <p>湖南邵阳 · 中国四大年画之一</p>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-video"></i> 制作工艺视频</h2>
+            <div class="video-container process-video">
+                <video controls class="video-player">
+                    <source src="videos/tantou/process.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-sync-alt"></i> IP形象展示</h2>
+            <div class="video-container ip-video">
+                <video controls class="video-player">
+                    <source src="videos/tantou/ip-showcase.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-info-circle"></i> 滩头年画介绍</h2>
+            <div class="intro-text">
+                <p>滩头木版年画是湖南省隆回县滩头镇的传统美术工艺品，与天津杨柳青年画、山东潍坊年画、江苏桃花坞年画并称为中国“四大年画”。</p>
+                <p>滩头年画始于明末清初，已有300多年历史。它采用传统木版水印套色工艺，以浓郁的楚南地方特色自成一派。年画内容多以门神、吉祥图案、戏剧人物、神话传说为主。</p>
+                <p>滩头年画的独特之处在于其使用的纸张是当地生产的土纸，颜料也是用当地矿物和植物制作的天然颜料。代表作有《秦叔宝·尉迟恭》、《苗族英雄像》、《西湖借伞》等。</p>
+            </div>
+        </div>
+        
+        <div class="content-section fade-in">
+            <h2 class="section-title"><i class="fas fa-cogs"></i> 制作流程</h2>
+            <div class="intro-text">
+                <ul class="process-steps">
+                    <li><strong>绘稿：</strong>由画师绘制年画原稿。</li>
+                    <li><strong>刻版：</strong>在梨木板上刻制画版。</li>
+                    <li><strong>选纸：</strong>选用滩头特制的玉版纸。</li>
+                    <li><strong>蒸纸：</strong>将纸张蒸制使其软化。</li>
+                    <li><strong>托胶：</strong>在纸背托胶增加韧性。</li>
+                    <li><strong>刷粉：</strong>在纸面刷白粉底。</li>
+                    <li><strong>套印：</strong>按颜色顺序逐版套印。</li>
+                    <li><strong>开脸：</strong>对人物面部进行手工描绘。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 页面导航功能
+        document.querySelectorAll('.grid-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const targetPage = this.getAttribute('data-target');
+                document.getElementById('home-page').style.display = 'none';
+                document.getElementById(targetPage).style.display = 'block';
+                
+                // 触发动画
+                setTimeout(() => {
+                    document.querySelectorAll('.fade-in').forEach(el => {
+                        el.style.animation = 'none';
+                        setTimeout(() => {
+                            el.style.animation = '';
+                        }, 10);
+                    });
+                }, 100);
+            });
+        });
+        
+        // 返回首页功能
+        function goBack() {
+            document.querySelectorAll('.detail-page').forEach(page => {
+                page.style.display = 'none';
+            });
+            document.getElementById('home-page').style.display = 'block';
+            return false;
+        }
+        
+        // 初始化显示首页
+        document.getElementById('home-page').style.display = 'block';
+    </script>
+</body>
+</html>
